@@ -1,4 +1,5 @@
 import { useUser } from "@clerk/nextjs";
+import Image from "next/image";
 
 const CreatePostWizard = () => {
   const { user } = useUser();
@@ -11,10 +12,12 @@ const CreatePostWizard = () => {
 
   return (
     <div className="flex w-full gap-4">
-      <img
+      <Image
         src={user.profileImageUrl}
         alt="Profile"
-        className="h-14 w-14 rounded-full"
+        className="rounded-full"
+        width={56}
+        height={56}
       />
       <input
         placeholder="Type some emojis"

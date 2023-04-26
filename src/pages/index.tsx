@@ -1,10 +1,38 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
-import { SignInButton, useUser, SignOutButton } from "@clerk/nextjs";
+import { SignInButton, useUser } from "@clerk/nextjs";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import Image from "next/image";
 
-import { api } from "~/utils/api";
+import { type RouterOutputs, api } from "~/utils/api";
 import CreatePostWizard from "~/components/CreatePostWizard";
+
+dayjs.extend(relativeTime);
+
+type PostWithUser = RouterOutputs["posts"]["getAll"][number];
+const PostsView = (props: PostWithUser) => {
+  const { post, author } = props;
+
+  return (
+    <div className="flex gap-3 border-b border-slate-400 p-4">
+      <Image
+        src={author.profilePicture}
+        alt={author.username}
+        className="rounded-full"
+        width={56}
+        height={56}
+      />
+      <div className="flex flex-col ">
+        <div className="flex gap-1 text-slate-300">
+          <span>{`@${author.username}`}</span>{" "}
+          <span className="font-thin">. {dayjs(post.createdAt).fromNow()}</span>
+        </div>
+        <span>{post.content}</span>
+      </div>
+    </div>
+  );
+};
 
 const Home: NextPage = () => {
   const user = useUser();
@@ -33,10 +61,8 @@ const Home: NextPage = () => {
             {user.isSignedIn && <CreatePostWizard />}
           </div>
           <div className="flex flex-col">
-            {data.map(({ post, author }) => (
-              <div key={post.id} className="border-b border-slate-400 p-8">
-                {post.content}
-              </div>
+            {data.map((fullPost) => (
+              <PostsView key={fullPost.post.id} {...fullPost} />
             ))}
           </div>
         </div>
