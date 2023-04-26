@@ -7,6 +7,7 @@ import Image from "next/image";
 
 import { type RouterOutputs, api } from "~/utils/api";
 import CreatePostWizard from "~/components/CreatePostWizard";
+import Loading from "~/components/Loading";
 
 dayjs.extend(relativeTime);
 
@@ -39,7 +40,7 @@ const Home: NextPage = () => {
 
   const { data, isLoading } = api.posts.getAll.useQuery();
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Loading />;
 
   if (!data) return <div>Something went wrong...</div>;
 
