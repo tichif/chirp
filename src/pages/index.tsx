@@ -35,14 +35,27 @@ const PostsView = (props: PostWithUser) => {
   );
 };
 
-const Home: NextPage = () => {
-  const user = useUser();
-
+const Feed = () => {
   const { data, isLoading } = api.posts.getAll.useQuery();
 
   if (isLoading) return <Loading />;
 
   if (!data) return <div>Something went wrong...</div>;
+
+  return (
+    <div className="flex flex-col">
+      {data.map((fullPost) => (
+        <PostsView key={fullPost.post.id} {...fullPost} />
+      ))}
+    </div>
+  );
+};
+
+const Home: NextPage = () => {
+  const user = useUser();
+
+  // start fetching asap
+  api.posts.getAll.useQuery();
 
   return (
     <>
@@ -61,11 +74,7 @@ const Home: NextPage = () => {
             )}
             {user.isSignedIn && <CreatePostWizard />}
           </div>
-          <div className="flex flex-col">
-            {data.map((fullPost) => (
-              <PostsView key={fullPost.post.id} {...fullPost} />
-            ))}
-          </div>
+          <Feed />
         </div>
       </main>
     </>
