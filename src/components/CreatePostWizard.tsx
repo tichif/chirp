@@ -1,8 +1,10 @@
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 
 import { api } from "~/utils/api";
+import { LoadingSpinner } from "./Loading";
 
 const CreatePostWizard = () => {
   const { user } = useUser();
@@ -15,6 +17,15 @@ const CreatePostWizard = () => {
     onSuccess: () => {
       setContent("");
       void ctx.posts.getAll.invalidate();
+      toast.success("Post created !!!");
+    },
+    onError: (e) => {
+      const errorMessages = e.data?.zodError?.fieldErrors.content;
+      if (errorMessages && errorMessages[0]) {
+        toast.error(errorMessages[0]);
+      } else {
+        toast.error("Failed to create post. Try again later!!!");
+      }
     },
   });
 
@@ -42,8 +53,24 @@ const CreatePostWizard = () => {
         value={content}
         onChange={(e) => setContent(e.target.value)}
         disabled={isLoading}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            if (content != "") {
+              submitHandler();
+            }
+          }
+        }}
       />
-      <button onClick={submitHandler}>Submit</button>
+      {isLoading ? (
+        <div className="flex items-center justify-center">
+          <LoadingSpinner size={20} />
+        </div>
+      ) : (
+        <button onClick={submitHandler} disabled={isLoading}>
+          Submit
+        </button>
+      )}
     </div>
   );
 };
