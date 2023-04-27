@@ -1,4 +1,3 @@
-import { type User } from "@clerk/nextjs/dist/api";
 import { clerkClient } from "@clerk/nextjs/server";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -9,14 +8,7 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 import rateLimit from "~/utils/rateLimit";
-
-const filterUserForClient = (user: User) => {
-  return {
-    id: user.id,
-    username: user.username,
-    profilePicture: user.profileImageUrl,
-  };
-};
+import { filterUserForClient } from "~/server/helpers/filterUserForClient";
 
 export const postsRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
