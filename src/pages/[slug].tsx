@@ -1,15 +1,12 @@
 import { type GetStaticPropsContext, type InferGetStaticPropsType } from "next";
 import Head from "next/head";
-import { createServerSideHelpers } from "@trpc/react-query/server";
-import superjson from "superjson";
-import { prisma } from "~/server/db";
 import Image from "next/image";
 
 import { api } from "~/utils/api";
-import { appRouter } from "~/server/api/root";
 import Layout from "~/components/Layout";
 import LoadingPage from "~/components/Loading";
 import PostsView from "~/components/PostView";
+import { helpers } from "~/server/helpers/ssg";
 
 const Feed = ({
   userId,
@@ -82,12 +79,6 @@ const ProfilePage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
 export const getStaticProps = async (
   context: GetStaticPropsContext<{ slug: string }>
 ) => {
-  const helpers = createServerSideHelpers({
-    router: appRouter,
-    ctx: { prisma, userId: null },
-    transformer: superjson, // optional - adds superjson serialization
-  });
-
   const username = context.params?.slug as string;
 
   await helpers.profile.getUserByUsername.prefetch({
