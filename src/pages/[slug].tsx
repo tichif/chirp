@@ -8,6 +8,38 @@ import Image from "next/image";
 import { api } from "~/utils/api";
 import { appRouter } from "~/server/api/root";
 import Layout from "~/components/Layout";
+import LoadingPage from "~/components/Loading";
+import PostsView from "~/components/PostView";
+
+const Feed = ({
+  userId,
+  author,
+}: {
+  userId: string;
+  author: {
+    username: string;
+    id: string;
+    profilePicture: string;
+  };
+}) => {
+  const { data, isLoading } = api.posts.getUserPosts.useQuery({ userId });
+
+  if (isLoading) {
+    return <LoadingPage />;
+  }
+
+  if (!data || data.length === 0) {
+    return <p>SNo posts for this user</p>;
+  }
+
+  return (
+    <div className="flex flex-col">
+      {data.map((post) => (
+        <PostsView key={post.id} author={author} post={post} />
+      ))}
+    </div>
+  );
+};
 
 const ProfilePage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   const { username } = props;
@@ -38,6 +70,10 @@ const ProfilePage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
         <div className="h-[64px]"></div>
         <div className="p-4 text-2xl font-bold">@{data.username}</div>
         <div className="w-full border-b border-slate-400"></div>
+        <Feed
+          userId={data.id}
+          author={{ ...data, username: data.username ?? "" }}
+        />
       </Layout>
     </>
   );
