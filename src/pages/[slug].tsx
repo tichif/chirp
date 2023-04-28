@@ -1,14 +1,10 @@
-import {
-  type NextPage,
-  type GetStaticPropsContext,
-  type InferGetStaticPropsType,
-} from "next";
+import { type GetStaticPropsContext, type InferGetStaticPropsType } from "next";
 import Head from "next/head";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import superjson from "superjson";
 import { prisma } from "~/server/db";
 
-import { api, type RouterOutputs } from "~/utils/api";
+import { api } from "~/utils/api";
 import { appRouter } from "~/server/api/root";
 
 const ProfilePage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {

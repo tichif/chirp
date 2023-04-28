@@ -8,6 +8,7 @@ import Link from "next/link";
 import { type RouterOutputs, api } from "~/utils/api";
 import CreatePostWizard from "~/components/CreatePostWizard";
 import Loading from "~/components/Loading";
+import Layout from "~/components/Layout";
 
 dayjs.extend(relativeTime);
 
@@ -69,21 +70,17 @@ const Home: NextPage = () => {
   api.posts.getAll.useQuery();
 
   return (
-    <>
-      <main className="flex h-screen justify-center">
-        <div className="w-full border-x border-slate-400 md:max-w-2xl">
-          <div className="flex border-b border-slate-400 p-4">
-            {!user.isSignedIn && (
-              <div className="flex justify-center">
-                <SignInButton />
-              </div>
-            )}
-            {user.isSignedIn && <CreatePostWizard />}
+    <Layout>
+      <div className="flex border-b border-slate-400 p-4">
+        {!user.isSignedIn && (
+          <div className="flex justify-center">
+            <SignInButton />
           </div>
-          <Feed />
-        </div>
-      </main>
-    </>
+        )}
+        {user.isSignedIn && <CreatePostWizard />}
+      </div>
+      <Feed />
+    </Layout>
   );
 };
 
