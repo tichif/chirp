@@ -14,7 +14,7 @@ export const profileRouter = createTRPCRouter({
       });
 
       if (!user) {
-        return new TRPCError({
+        throw new TRPCError({
           code: "BAD_REQUEST",
           message: "User not found",
         });
