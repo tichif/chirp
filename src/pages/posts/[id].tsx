@@ -1,13 +1,12 @@
 import { type GetStaticPropsContext, type InferGetStaticPropsType } from "next";
 import Head from "next/head";
-import { createServerSideHelpers } from "@trpc/react-query/server";
-import superjson from "superjson";
 import { prisma } from "~/server/db";
 import Image from "next/image";
 
 import { api } from "~/utils/api";
-import { appRouter } from "~/server/api/root";
 import { helpers } from "~/server/helpers/ssg";
+import Layout from "~/components/Layout";
+import PostsView from "~/components/PostView";
 
 const PostPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   const { data } = api.posts.getPost.useQuery({ postId: props.id });
@@ -19,9 +18,11 @@ const PostPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
     <>
       <Head>
-        <title>{data.content}</title>
+        <title>{`${data.post.content} - @${data.author.username}`}</title>
       </Head>
-      <main className="flex h-screen justify-center">Post page</main>
+      <Layout>
+        <PostsView {...data} />
+      </Layout>
     </>
   );
 };
