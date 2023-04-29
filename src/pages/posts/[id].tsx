@@ -1,7 +1,6 @@
 import { type GetStaticPropsContext, type InferGetStaticPropsType } from "next";
 import Head from "next/head";
 import { prisma } from "~/server/db";
-import Image from "next/image";
 
 import { api } from "~/utils/api";
 import { helpers } from "~/server/helpers/ssg";
